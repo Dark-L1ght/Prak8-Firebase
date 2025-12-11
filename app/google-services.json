@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "295409047814",
+    "firebase_url": "https://pmobfb375-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pmobfb375",
+    "storage_bucket": "pmobfb375.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295409047814:android:7c440abaa7211140a7a687",
+        "android_client_info": {
+          "package_name": "com.prak9.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8Wk8oTDLnOrqHZu2QpnO_TGuVftA6eiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
