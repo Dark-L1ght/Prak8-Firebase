@@ -106,9 +106,14 @@ class MainActivity : AppCompatActivity() {
     private fun deleteTask(task: Task) {
         task.id?.let {
             tasksRef.child(it).removeValue()
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Task deleted", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { error ->
+                    Toast.makeText(this, "Failed to delete: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
-
     private fun showEditDialog(task: Task) {
         TaskFormDialog(this, tasksRef, task).show()
     }

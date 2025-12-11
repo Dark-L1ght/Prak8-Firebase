@@ -20,14 +20,12 @@ class TaskFormDialog(
     fun show() {
         val binding = DialogTaskBinding.inflate(LayoutInflater.from(context))
 
-        // Pre-fill data if we are Editing
-        existingTask?.let {
-            binding.etTitle.setText(it.title)
-            binding.etDescription.setText(it.description)
-            binding.etDeadline.setText(it.deadline)
+        if (existingTask != null) {
+            binding.etTitle.setText(existingTask.title)
+            binding.etDescription.setText(existingTask.description)
+            binding.etDeadline.setText(existingTask.deadline)
         }
 
-        // Date Picker setup
         binding.etDeadline.setOnClickListener {
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
@@ -58,12 +56,12 @@ class TaskFormDialog(
                 val deadline = binding.etDeadline.text.toString().trim()
 
                 if (title.isEmpty() || deadline.isEmpty()) {
-                    Toast.makeText(context, "Title and Deadline are required!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Title and Deadline are required", Toast.LENGTH_SHORT).show()
                 } else {
                     if (existingTask == null) {
-                        addNewTask(title, desc, deadline)
+                        saveData(null, title, desc, deadline, false, "Task added")
                     } else {
-                        updateTask(existingTask.id!!, title, desc, deadline, existingTask.isFinished)
+                        saveData(existingTask.id, title, desc, deadline, existingTask.isFinished, "Task updated")
                     }
                 }
             }
@@ -71,24 +69,17 @@ class TaskFormDialog(
             .show()
     }
 
-    private fun addNewTask(title: String, desc: String, deadline: String) {
-        val id = tasksRef.push().key ?: return
-        val task = Task(id, title, desc, deadline, false)
+    private fun saveData(id: String?, title: String, desc: String, deadline: String, isFinished: Boolean, successMessage: String) {
+        val key = id ?: tasksRef.push().key ?: return
+        val task = Task(key, title, desc, deadline, isFinished)
 
-        tasksRef.child(id).setValue(task)
+        tasksRef.child(key).setValue(task)
             .addOnSuccessListener {
-                Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
+                // Here is your specific Toast
+                Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-
-                Toast.makeText(context, "Failed: ${e.message}", Toast.LENGTH_LONG).show()
-                android.util.Log.e("FirebaseError", "Error adding task", e)
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun updateTask(id: String, title: String, desc: String, deadline: String, isFinished: Boolean) {
-        val task = Task(id, title, desc, deadline, isFinished)
-        tasksRef.child(id).setValue(task)
-            .addOnSuccessListener { Toast.makeText(context, "Updated!", Toast.LENGTH_SHORT).show() }
     }
 }
